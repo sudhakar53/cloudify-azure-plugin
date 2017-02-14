@@ -32,6 +32,8 @@ from cloudify_azure import (constants, exceptions, utils)
 from cloudify_azure.auth.oauth2 import OAuth2
 # Context
 from cloudify import ctx
+from cloudify.plugins.secret_store import \
+    CloudifySecretStore
 
 
 class AzureConnection(object):
@@ -54,6 +56,7 @@ class AzureConnection(object):
         self.access_token = self.get_access_token()
         # Get a pre-configured requests.Session object
         self.session = self.get_session_connection()
+        self.secrets = CloudifySecretStore()
 
     def __del__(self):
         # Clean up any Session connections
@@ -162,7 +165,7 @@ class AzureConnection(object):
         :rtype: string
         '''
         # Load the credentials
-        creds = utils.get_credentials(_ctx=self.ctx)
+        creds = utils.get_credentials(_ctx=self.ctx, secrets=self.secrets)
         # Prepare the OAuth 2.0 client
         oauth2_client = OAuth2(creds, logger=self.log)
         # Retrieve an API access token

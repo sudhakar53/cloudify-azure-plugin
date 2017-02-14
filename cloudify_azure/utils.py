@@ -591,7 +591,7 @@ def get_rel_id_references(resource, rel_type, api_fmt=True, _ctx=ctx):
     return ids
 
 
-def get_credentials(_ctx=ctx):
+def get_credentials(_ctx=ctx, secrets=object):
     '''
         Gets any Azure API access information from the
         current node properties or a provider context
@@ -608,6 +608,9 @@ def get_credentials(_ctx=ctx):
         f_creds = get_credentials_from_file(f_config_path)
     n_creds = get_credentials_from_node(_ctx=_ctx)
     creds = dict_update(f_creds, n_creds)
+    if getattr(secrets, 'use', False):
+        creds = secrets.update_config_with_secrets(
+            config=creds, config_schema_name='azure_config')
     return AzureCredentials(**creds)
 
 
@@ -643,6 +646,9 @@ def get_credentials_from_node(_ctx=ctx):
     props = _ctx.node.properties.get('azure_config')
     return {k: props[k] for k in cred_keys if props.get(k)}
 
+
+def get_credentials_from_secret_store():
+    pass
 
 def get_subscription_id(_ctx=ctx):
     '''
