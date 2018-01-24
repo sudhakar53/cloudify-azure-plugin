@@ -256,15 +256,10 @@ def create(args=None, **_):
 def configure(command_to_execute, file_uris, **_):
     '''Configures the resource'''
     os_family = ctx.node.properties.get('os_family', '').lower()
-    if os_family == 'linux':
-        if command_to_execute == POWERSHELL_DEFAULT_SCRIPT:
-            command_to_execute = ''
-        if ENABLE_WINRM_PS1 in file_uris:
-            file_uris = None
     install_agent_userdata = ctx.agent.init_script()
     if install_agent_userdata:
         command_to_execute = '\n'.join([command_to_execute, install_agent_userdata])
-    if command_to_execute:
+    if command_to_execute or file_uris:
         utils.task_resource_create(
             VirtualMachineExtension(
                 virtual_machine=utils.get_resource_name()
