@@ -253,7 +253,7 @@ def create(args=None, **_):
         })
 
 @operation
-def configure(command_to_execute, file_uris, **_):
+def configure(command_to_execute, file_uris, type_handler_version='v2.0', **_):
     '''Configures the resource'''
     os_family = ctx.node.properties.get('os_family', '').lower()
     install_agent_userdata = ctx.agent.init_script()
@@ -270,7 +270,7 @@ def configure(command_to_execute, file_uris, **_):
                 'properties': {
                     'publisher': 'Microsoft.Compute',
                     'type': 'CustomScriptExtension',
-                    'typeHandlerVersion': '1.4',
+                    'typeHandlerVersion': type_handler_version,
                     'settings': {
                         'fileUris': file_uris,
                         'commandToExecute': command_to_execute
