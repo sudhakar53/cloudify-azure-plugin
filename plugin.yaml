@@ -12,6 +12,10 @@ plugins:
 data_types:
   cloudify.datatypes.azure.Config:
     properties:
+      endpoint:
+        description: >
+          Endpoint for cloud authentication
+        default: https://login.microsoftonline.com
       subscription_id:
         description: >
           A Microsoft Azure subscription ID. This is a unique

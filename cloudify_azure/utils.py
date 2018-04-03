@@ -608,6 +608,8 @@ def get_credentials(_ctx=ctx):
         f_creds = get_credentials_from_file(f_config_path)
     n_creds = get_credentials_from_node(_ctx=_ctx)
     creds = dict_update(f_creds, n_creds)
+    if 'endpoint' not in creds:
+        creds['endpoint'] = constants.OAUTH2_ENDPOINT
     return AzureCredentials(**creds)
 
 
@@ -621,7 +623,7 @@ def get_credentials_from_file(config_path=constants.CONFIG_PATH):
     '''
     cred_keys = [
         'client_id', 'client_secret',
-        'subscription_id', 'tenant_id'
+        'subscription_id', 'tenant_id', 'endpoint'
     ]
     config = SafeConfigParser()
     config.read(config_path)
@@ -638,7 +640,7 @@ def get_credentials_from_node(_ctx=ctx):
     '''
     cred_keys = [
         'client_id', 'client_secret',
-        'subscription_id', 'tenant_id'
+        'subscription_id', 'tenant_id', 'endpoint'
     ]
     props = _ctx.node.properties.get('azure_config')
     return {k: props[k] for k in cred_keys if props.get(k)}

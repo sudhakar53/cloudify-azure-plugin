@@ -36,7 +36,7 @@ from cloudify import ctx
 
 AzureCredentials = namedtuple(
     'AzureCredentials',
-    ['tenant_id', 'client_id', 'client_secret', 'subscription_id']
+    ['tenant_id', 'client_id', 'client_secret', 'subscription_id', 'endpoint']
 )
 '''
     Microsoft Azure credentials and access information
@@ -45,6 +45,7 @@ AzureCredentials = namedtuple(
 :param string client_id: Azure client ID (AD username)
 :param string client_secret: Azure client secret (AD password)
 :param string subscription_id: Azure subscription ID
+:param string endpoint: OAuth2 endpoint
 '''
 
 
@@ -97,7 +98,7 @@ class OAuth2(object):
         # up to 120 seconds.
         with requests.Session() as session:
             session.mount(
-                constants.OAUTH2_ENDPOINT,
+                self.credentials.endpoint,
                 requests.adapters.HTTPAdapter(
                     max_retries=urllib3.util.Retry(
                         total=10,
